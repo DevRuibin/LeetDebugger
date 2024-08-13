@@ -1,4 +1,4 @@
-package com.example.springintoai;
+package devruibin.github.com.leetdebugger;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
