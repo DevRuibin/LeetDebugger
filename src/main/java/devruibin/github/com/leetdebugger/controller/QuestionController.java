@@ -1,6 +1,8 @@
 package devruibin.github.com.leetdebugger.controller;
 
+import devruibin.github.com.leetdebugger.model.CodeSnippet;
 import devruibin.github.com.leetdebugger.model.Question;
+import devruibin.github.com.leetdebugger.model.QuestionContent;
 import devruibin.github.com.leetdebugger.model.QuestionIdSlugPair;
 import devruibin.github.com.leetdebugger.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +35,15 @@ public class QuestionController {
     @GetMapping("/get-slug-by-id/{id}")
     public Mono<String> getSlugById(@PathVariable("id") String frontendId) {
         return Mono.just(leetCodeService.getSlugById(frontendId));
+    }
+
+    @GetMapping("/question-content/{frontendId}")
+    public Mono<QuestionContent> getQuestionContent(@PathVariable String frontendId) {
+        return leetCodeService.getQuestionContent(frontendId);
+    }
+
+    @GetMapping("/question-code-snippet/{frontendId}")
+    public Mono<CodeSnippet> getSolutionCodeSnippet(@PathVariable String frontendId) {
+        return leetCodeService.getQuestionCodeSnippet(frontendId);
     }
 }

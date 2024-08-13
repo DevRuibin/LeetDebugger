@@ -1,17 +1,16 @@
 package devruibin.github.com.leetdebugger.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import devruibin.github.com.leetdebugger.model.LeetCodeResponse;
-import devruibin.github.com.leetdebugger.model.Question;
-import devruibin.github.com.leetdebugger.model.QuestionIdSlugPair;
-import devruibin.github.com.leetdebugger.model.StatStatusPair;
+import devruibin.github.com.leetdebugger.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionService {
 
     private final HttpGraphQlClient graphQlClient;
@@ -27,16 +27,68 @@ public class QuestionService {
     private final ObjectMapper objectMapper;
     private final QuestionIdSlugPair questionIdSlugPair;
 
-    public Mono<Question> getQuestion(String titleSlug){
+
+    public Mono<CodeSnippet> getQuestionCodeSnippet(String frontendId) {
+        String titleSlug = questionIdSlugPair.getQuestionIdSlugMap().get(frontendId);
+        log.info("titleSlug: {}", titleSlug);
+        return getQuestionCodeSnippetByTitleSlug(titleSlug);
+    }
+
+    private Mono<CodeSnippet> getQuestionCodeSnippetByTitleSlug(String titleSlug) {
         //language=GraphQL
         String document = """
-        query questionTitle($titleSlug: String!) {
-            question(titleSlug: $titleSlug) {
-                title
-                titleSlug
-            }
-        }
-        """;
+               query questionEditorData($titleSlug: String!){
+                question(titleSlug: $titleSlug){
+                codeSnippets {
+                lang langSlug code }
+                 }
+                }
+               """;
+
+        return graphQlClient.document(document)
+                .variable("titleSlug", titleSlug)
+                .retrieve("question")
+                .toEntity(CodeSnippetList.class)
+                .flatMap(codeSnippetList -> {
+                    List<CodeSnippet> codeSnippets = codeSnippetList.codeSnippets();
+                    return Flux.fromIterable(codeSnippets)
+                            .filter(codeSnippet -> "java".equalsIgnoreCase(codeSnippet.langSlug()))
+                            .next();
+                });
+    }
+
+    public Mono<QuestionContent> getQuestionContent(String frontendId) {
+        String titleSlug = questionIdSlugPair.getQuestionIdSlugMap().get(frontendId);
+        return getQuestionContentByTitleSlug(titleSlug);
+    }
+
+
+    private Mono<QuestionContent> getQuestionContentByTitleSlug(String titleSlug) {
+        //language=GraphQL
+        String document = """
+                 query questionContent($titleSlug: String!) {
+                     question(titleSlug: $titleSlug) {
+                         content
+                     }
+                 }
+                """;
+
+        return graphQlClient.document(document)
+                .variable("titleSlug", titleSlug)
+                .retrieve("question")
+                .toEntity(QuestionContent.class);
+    }
+
+    public Mono<Question> getQuestion(String titleSlug) {
+        //language=GraphQL
+        String document = """
+                query questionTitle($titleSlug: String!) {
+                    question(titleSlug: $titleSlug) {
+                        title
+                        titleSlug
+                    }
+                }
+                """;
 
         return graphQlClient.document(document)
                 .variable("titleSlug", titleSlug)
