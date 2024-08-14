@@ -1,5 +1,6 @@
 package devruibin.github.com.leetdebugger.service;
 
+import devruibin.github.com.leetdebugger.config.LanguageConfig;
 import devruibin.github.com.leetdebugger.config.PromptConfig;
 import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
@@ -15,13 +16,15 @@ import java.util.Stack;
 
 @Service
 public class TestCaseService {
+    private final LanguageConfig languageConfig;
     private static final Logger log = LoggerFactory.getLogger(TestCaseService.class);
     private final ChatClient chatClient;
     private final QuestionService questionService;
     private final PromptConfig promptConfig;
 
-    public TestCaseService(ChatClient.Builder chatClientBuilder,
-                           QuestionService questionService, PromptConfig promptConfig) {
+    public TestCaseService( ChatClient.Builder chatClientBuilder,
+                           QuestionService questionService, PromptConfig promptConfig,LanguageConfig languageConfig) {
+        this.languageConfig = languageConfig;
         this.chatClient = chatClientBuilder.build();
         this.questionService = questionService;
         this.promptConfig = promptConfig;
@@ -54,7 +57,7 @@ public class TestCaseService {
             throw new IllegalArgumentException("Failed to generate test case");
         }
         if(content.contains("```")){
-            content = content.substring(content.indexOf("package"));
+            content = content.substring(content.indexOf("\n"));
             content = content.substring(0, content.lastIndexOf("```"));
         }
         return content;
@@ -62,7 +65,7 @@ public class TestCaseService {
 
     public String generateFilesByTitleSlug(String titleSlug, String language) {
         String snippet = Objects.requireNonNull(questionService
-                .getQuestionCodeSnippetByTitleSlug(titleSlug)
+                .getQuestionCodeSnippetByTitleSlug(titleSlug, language)
                 .block())
                 .code();
         String path = "src/test/java";
@@ -95,20 +98,20 @@ public class TestCaseService {
                 
                 %s
                 """.formatted(packageName, classNameAndCode.code);
-            File helperFile = new File(packageDir, classNameAndCode.className+".java");
+            File helperFile = new File(packageDir, classNameAndCode.className+languageConfig.getSuffix(language));
             boolean successWriteHelper = writeToFile(helperFile, helperClass);
 
         }
 
 
         // write Solution class
-        File solutionFile = new File(packageDir, solutionClassName + ".java");
+        File solutionFile = new File(packageDir, solutionClassName + languageConfig.getSuffix(language));
         boolean successWriteSolution = writeToFile(solutionFile, SolutionClass);
         if (!successWriteSolution) {
             return "Failed to write Solution class";
         }
         // write Test class
-        File testFile = new File(packageDir, testClassName + ".java");
+        File testFile = new File(packageDir, testClassName + languageConfig.getSuffix(language));
         boolean successWriteTest = writeToFile(testFile, testClass);
         if (!successWriteTest) {
             return "Failed to write Test class";

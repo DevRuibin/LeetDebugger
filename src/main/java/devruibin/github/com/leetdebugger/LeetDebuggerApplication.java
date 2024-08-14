@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(PromptConfig.class)
+@ConfigurationPropertiesScan
 public class LeetDebuggerApplication {
 
     public static void main(String[] args) {

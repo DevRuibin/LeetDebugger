@@ -26,14 +26,23 @@ prompt:
         8. Import any necessary classes. You can only use classes from spring-boot-starter-test or java built-in classes.
       I will provide the problem content and the code snippet, and I would like the test cases generated based on that.
     c: |
-      You have a C program where you need to implement a function 
-      based on the provided code snippet. The problem statement
-      includes input and output examples, constraints, and other
-      details. Please generate C test cases that include:
-      1. The necessary headers for running tests.
-      2. A main function or test function that tests the provided function.
-      3. Test cases that cover edge cases, typical cases, and invalid inputs.
-      4. Necessary assertions to check the correctness of the function.
+      I have received a problem statement that includes a code snippet where I need to implement a method. The problem statement includes examples, constraints, and other details.
+      Given the problem and the method signature provided, can you help me generate C test cases?
+      Please generate a C program for testing that includes:
+        1. A test function for each example provided in the problem statement.
+        2. Each test function should call the function that needs to be implemented and compare the result against the expected output using assertions.
+        3. A `main` function that calls each test function and prints a message if all tests pass.
+        4. Any necessary `#include` directives for standard libraries.
+        5. Please return only the C code without any additional text. You don't need to wrap it up using backticks.
+        6. Please don't give me the solution code, only the test cases. Each test case should be a separate function.
+        7. Please don't give me the solution code, please remember that.
+        8. Ensure the test code is clear and straightforward.
+      I will provide the problem content and the code snippet, and I would like the test cases generated based on that.
+
+language:
+  suffix:
+    java: ".java"
+    c: ".c"
 
 
 

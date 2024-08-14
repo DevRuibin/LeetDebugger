@@ -26,7 +26,7 @@ Debugging has never been this easy—or this cool.
 
 ## Improved Productivity
 
-1. Ensure the test cases are in the correct format, since they are generated automatically by AI.
+1. ~~Ensure the test cases are in the correct format, since they are generated automatically by AI.~~
 2. Add Authentication and Authorization to your LeetCode account so that you can access premium questions, and even submit your solutions directly from your IDE.
 3. Convert the project to a plugin for popular IDEs like IntelliJ, and VS Code.
 4. Allow users to specify the programming language they are using, and generate the test cases accordingly.

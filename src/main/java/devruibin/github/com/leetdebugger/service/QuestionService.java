@@ -31,10 +31,10 @@ public class QuestionService {
     public Mono<CodeSnippet> getQuestionCodeSnippet(String frontendId) {
         String titleSlug = questionIdSlugPair.getQuestionIdSlugMap().get(frontendId);
         log.info("titleSlug: {}", titleSlug);
-        return getQuestionCodeSnippetByTitleSlug(titleSlug);
+        return getQuestionCodeSnippetByTitleSlug(titleSlug, "java");
     }
 
-    Mono<CodeSnippet> getQuestionCodeSnippetByTitleSlug(String titleSlug) {
+    Mono<CodeSnippet> getQuestionCodeSnippetByTitleSlug(String titleSlug, String language) {
         //language=GraphQL
         String document = """
                query questionEditorData($titleSlug: String!){
@@ -52,7 +52,7 @@ public class QuestionService {
                 .flatMap(codeSnippetList -> {
                     List<CodeSnippet> codeSnippets = codeSnippetList.codeSnippets();
                     return Flux.fromIterable(codeSnippets)
-                            .filter(codeSnippet -> "java".equalsIgnoreCase(codeSnippet.langSlug()))
+                            .filter(codeSnippet -> language.equalsIgnoreCase(codeSnippet.langSlug()))
                             .next();
                 });
     }

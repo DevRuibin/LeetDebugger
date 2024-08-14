@@ -1,5 +1,6 @@
 package devruibin.github.com.leetdebugger.service;
 
+import devruibin.github.com.leetdebugger.config.LanguageConfig;
 import devruibin.github.com.leetdebugger.config.PromptConfig;
 import devruibin.github.com.leetdebugger.model.QuestionContent;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,9 @@ class TestCaseServiceTest {
     private TestCaseService testCaseService;
 
     @Mock
+    LanguageConfig languageConfig;
+
+    @Mock
     private PromptConfig promptConfig;
 
     @BeforeEach
@@ -40,7 +44,7 @@ class TestCaseServiceTest {
         Mockito.when(chatClientBuilder.build()).thenReturn(chatClient);
 
         // Inject the mocks into the TestCaseService
-        testCaseService = new TestCaseService(chatClientBuilder, questionService, promptConfig);
+        testCaseService = new TestCaseService(chatClientBuilder, questionService, promptConfig, languageConfig);
     }
 
     @Test
