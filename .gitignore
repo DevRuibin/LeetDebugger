@@ -1,5 +1,6 @@
-src/test/java
-!src/test/java/devruibin/github/com/leetdebugger/
+src/test/java/*
+!src/test/java/devruibin/
+!src/test/java/devruibin/**
 HELP.md
 .gradle
 build/
