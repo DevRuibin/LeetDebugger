@@ -52,9 +52,19 @@ public class TestCaseService {
                 "Content: " + content + "\n" +
                 "Code Snippet: " + snippet;
 
+        String generatedTestFile = this.chatClient.prompt().user(finalPrompt).call().content();
+        return formatTestFile(generatedTestFile);
+    }
 
-
-        return this.chatClient.prompt().user(finalPrompt).call().content();
+    public String formatTestFile(String content){
+        if(content == null || content.isEmpty()){
+            throw new IllegalArgumentException("Failed to generate test case");
+        }
+        if(content.contains("```")){
+            content = content.substring(content.indexOf("package"));
+            content = content.substring(0, content.lastIndexOf("```"));
+        }
+        return content;
     }
 
     public String generateFilesByTitleSlug(String titleSlug){
