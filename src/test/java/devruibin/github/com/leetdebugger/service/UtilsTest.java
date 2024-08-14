@@ -34,8 +34,8 @@ class UtilsTest {
                     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
                 }
                 """;
-        System.out.println(Utils.extractHelperClass(input));
-        assertEquals(expected, Utils.extractHelperClass(input));
+        System.out.println(Utils.extractHelperClass(input).code);
+        assertEquals(expected, Utils.extractHelperClass(input).code);
     }
 
 }

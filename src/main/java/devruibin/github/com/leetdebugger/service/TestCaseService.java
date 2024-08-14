@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Stack;
 
 @Service
 public class TestCaseService {
@@ -85,6 +86,18 @@ public class TestCaseService {
             if(!mkdir){
                 return "Failed to create package directory";
             }
+        }
+
+        Utils.ClassNameAndCode classNameAndCode = Utils.extractHelperClass(snippet);
+        if(!classNameAndCode.code.isEmpty()){
+            String helperClass = """
+                package %s;
+                
+                %s
+                """.formatted(packageName, classNameAndCode.code);
+            File helperFile = new File(packageDir, classNameAndCode.className+".java");
+            boolean successWriteHelper = writeToFile(helperFile, helperClass);
+
         }
 
 
