@@ -39,6 +39,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-graphql
     implementation("org.springframework.boot:spring-boot-starter-graphql:3.3.0")
 
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+
 }
 
 dependencyManagement {

@@ -1,7 +1,6 @@
 package devruibin.github.com.leetdebugger.controller;
 
 import devruibin.github.com.leetdebugger.service.TestCaseService;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,14 +15,17 @@ public class TestCaseController{
     }
 
     @GetMapping("test-case/{frontendId}")
-    public String getTestCase(@PathVariable String frontendId) {
-        return testCaseService.generateFiles(frontendId);
+    public String getTestCase(
+            @PathVariable String frontendId,
+            @RequestParam(required = false) String language)
+    {
+        return testCaseService.generateFiles(frontendId,language);
 
     }
 
     @GetMapping("test-case-by-title-slug/{titleSlug}")
     public String getTestCaseByTitleSlug(@PathVariable String titleSlug) {
-        return testCaseService.generateFilesByTitleSlug(titleSlug);
+        return testCaseService.generateFilesByTitleSlug(titleSlug, "java");
 
     }
 

@@ -1,4 +1,5 @@
 src/test/java/*
+src/test/java/**
 !src/test/java/devruibin/
 !src/test/java/devruibin/**
 HELP.md
