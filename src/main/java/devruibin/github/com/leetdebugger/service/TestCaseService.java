@@ -1,5 +1,7 @@
 package devruibin.github.com.leetdebugger.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import java.util.Objects;
 
 @Service
 public class TestCaseService {
+    private static final Logger log = LoggerFactory.getLogger(TestCaseService.class);
     private final ChatClient chatClient;
     private final QuestionService questionService;
 
@@ -19,10 +22,10 @@ public class TestCaseService {
         this.questionService = questionService;
     }
 
-    public String generateTestCase(String frontendId,
-                                   String titleSlug,
+    public String generateTestCase(String titleSlug,
                                    String snippet,
                                    String packageName) {
+        log.info("Generating test case for {}", titleSlug);
         String prompt = """
                 I have received a problem statement that includes a code snippet where I need to implement a method. The problem statement includes examples, constraints, and other details.
                 Given the problem and the method signature provided, can you help me generate Java test cases?
@@ -38,7 +41,7 @@ public class TestCaseService {
                 I will provide the problem content and the code snippet, and I would like the test cases generated based on that.
                 """;
         String content = Objects.requireNonNull(questionService
-                .getQuestionContent(frontendId)
+                .getQuestionContentByTitleSlug(titleSlug)
                 .block())
                 .content();
 
@@ -54,14 +57,10 @@ public class TestCaseService {
         return this.chatClient.prompt().user(finalPrompt).call().content();
     }
 
-    public String generateFiles(String frontendId){
-
-        String titleSlug = Objects.requireNonNull(questionService
-                .getSlugById(frontendId));
-
+    public String generateFilesByTitleSlug(String titleSlug){
         String snippet = Objects.requireNonNull(questionService
-                        .getQuestionCodeSnippet(frontendId)
-                        .block())
+                .getQuestionCodeSnippetByTitleSlug(titleSlug)
+                .block())
                 .code();
         String path = "src/test/java";
         String packageName = titleSlug.replaceAll("-", "");
@@ -75,9 +74,7 @@ public class TestCaseService {
                 %s
                 """.formatted(packageName, snippet);
 
-
-
-        String testClass = generateTestCase(frontendId, packageName, snippet, packageName);
+        String testClass = generateTestCase(titleSlug, snippet, packageName);
 
         // make package directory
         File packageDir = new File(absolutePath + "/" + packageName);
@@ -103,7 +100,13 @@ public class TestCaseService {
         }
         return "Files generated successfully";
 
+    }
 
+    public String generateFiles(String frontendId){
+
+        String titleSlug = Objects.requireNonNull(questionService
+                .getSlugById(frontendId));
+        return generateFilesByTitleSlug(titleSlug);
     }
 
     private boolean writeToFile(File file, String content) {

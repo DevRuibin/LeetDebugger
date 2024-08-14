@@ -34,7 +34,7 @@ public class QuestionService {
         return getQuestionCodeSnippetByTitleSlug(titleSlug);
     }
 
-    private Mono<CodeSnippet> getQuestionCodeSnippetByTitleSlug(String titleSlug) {
+    Mono<CodeSnippet> getQuestionCodeSnippetByTitleSlug(String titleSlug) {
         //language=GraphQL
         String document = """
                query questionEditorData($titleSlug: String!){
@@ -63,7 +63,7 @@ public class QuestionService {
     }
 
 
-    private Mono<QuestionContent> getQuestionContentByTitleSlug(String titleSlug) {
+    Mono<QuestionContent> getQuestionContentByTitleSlug(String titleSlug) {
         //language=GraphQL
         String document = """
                  query questionContent($titleSlug: String!) {

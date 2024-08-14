@@ -21,5 +21,11 @@ public class TestCaseController{
 
     }
 
+    @GetMapping("test-case-by-title-slug/{titleSlug}")
+    public String getTestCaseByTitleSlug(@PathVariable String titleSlug) {
+        return testCaseService.generateFilesByTitleSlug(titleSlug);
+
+    }
+
 
 }
