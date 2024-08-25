@@ -31,5 +31,5 @@ Debugging has never been this easy—or this cool.
 3. Convert the project to a plugin for popular IDEs like IntelliJ, and VS Code.
 4. Allow users to specify the programming language they are using, and generate the test cases accordingly.
 5. Allow users to specify the test cases they want to generate.
-6. Implement a CLI tool for users who prefer the terminal.
+6. Convert the project to a console based application
 7. **The possibilities are endless!**
